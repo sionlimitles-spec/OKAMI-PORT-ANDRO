@@ -1,31 +1,53 @@
-# Okami Recomp - Manager Shell (UI mockup)
+# Recompilation pipeline (the "like other people did it" path)
 
-Ini adalah **shell antarmuka (UI shell)** untuk proyek konsep "Okami on Android via static recompilation". Repo ini dibuat dari sesi brainstorming desain, bukan hasil riset recompilation yang sudah selesai.
+This project follows the same pattern as other PS2 static-recompilation ports
+(Gitaroo Man Native, BT3-Recomp, Ace Combat 5 Static Recompilation): all of them
+are built on top of **[PS2Recomp](https://github.com/ran-j/PS2Recomp)**, not a
+custom-written recompiler. We are doing the same here instead of reinventing it.
 
-## Status sejujurnya
+Useful discovery: PS2Recomp already ships its own `android/` Gradle project
+(raylib-based runner, NDK/CMake build). That means the Android target in this
+repo should eventually become a thin wrapper around *that* project (plus our
+manager UI), rather than something built from scratch.
 
-- ✅ Aplikasi Android asli (Kotlin + WebView), bisa di-build jadi APK dan diinstall.
-- ✅ Tampilan: kartu info game/perangkat/status, animasi micro-interaction, bottom nav.
-- ❌ **Belum bisa membaca atau memainkan ISO apapun.** Tombol "pilih ISO" masih dummy.
-- ❌ Belum ada mesin emulasi/recompilation Okami di dalamnya.
+## The pipeline, step by step
 
-## Kenapa belum bisa main?
+1. **Get the source ELF.** Extract `SLUS_213.79` (or the EU/JP equivalent) from
+   your own legally-owned Okami disc image. Nothing from the disc is ever
+   committed to this repo - only the generated code and config files are.
+2. **Analyze it.**
+   - Preferred (retail/stripped binaries, which Okami is): open the ELF in
+     [Ghidra](https://ghidra-sre.org/), run
+     `ps2xAnalyzer/tools/ghidra/ExportPS2Functions.java`, export the function
+     map as TOML + CSV.
+   - Fallback (quick local experiment, only works well if the ELF still has
+     debug symbols - Okami's retail build almost certainly does not):
+     `./ps2_analyzer okami.elf config.toml`
+3. **Recompile.** `./ps2_recomp config.toml` turns the ELF into generated C++
+   under `ps2xRecomp`'s output folder - one function at a time, almost
+   literally (`addiu $r4,$r4,0x20` becomes `ctx->r4 = ADD32(ctx->r4, 0x20);`).
+4. **Link against the runtime.** The generated code is compiled together with
+   `ps2xRuntime` (memory model, syscalls, basic GS/VU/file stubs) and
+   `ps2xIOP` (runs the original IRX modules with HLE fallbacks).
+5. **The hard, manual part: game overrides.** PS2Recomp's generic runtime does
+   not know how Okami's custom cel-shading / sumi-e ink renderer works. That
+   has to be hand-written as a *game override* module
+   (`PS2_REGISTER_GAME_OVERRIDE(...)` in `ps2xRuntime/include/game_overrides.h`)
+   that replaces specific EE functions by address for this exact build of
+   Okami. This is the step with no shortcut and no guaranteed timeline - it is
+   genuine reverse-engineering work, done incrementally as crashes/graphical
+   bugs are diagnosed.
+6. **Android build.** Point PS2Recomp's `android/app` project at the generated
+   sources + our game-override module, set `ps2xBootElf`, build with
+   `./gradlew assembleRelease`.
 
-Membuat Okami benar-benar berjalan di Android lewat *static recompilation* (ala [Black-Android](https://github.com/RanggaCasper/Black-Android)) adalah proyek riset reverse-engineering multi-bulan: toolchain intinya, [PS2Recomp](https://github.com/ran-j/PS2Recomp), sampai saat ini belum punya satupun judul yang benar-benar selesai, dan renderer cel-shading Okami (lewat VU0/VU1) termasuk salah satu yang paling kompleks untuk PS2.
+## What's blocking step 2 right now
 
-**Jalan pintas yang jujur dan nyata hari ini:** kalau tujuannya cuma "main Okami di HP", emulator PS2 open-source yang sudah matang seperti [Play!](https://github.com/jpd002/Play--Emulator) sudah mendukung banyak judul PS2 termasuk Okami, dan sudah punya build Android resmi. Static recompilation (seperti repo ini) baru masuk akal kalau tujuannya preservasi/performa native, bukan "ingin main sekarang juga".
+We need **your own legally-dumped Okami ELF** to run the analyzer on and see
+real numbers (how many functions, how much is auto-translatable vs. needs
+manual stubs/overrides). Nobody here can source that file from the internet -
+it has to come from a disc you own.
 
-## Build APK sendiri
-
-### Lewat GitHub Actions (tanpa install apapun di HP/PC)
-Setiap push ke `main` otomatis membangun APK lewat GitHub Actions. Ambil hasilnya di tab **Actions** → pilih run terakhir → unduh artifact `OkamiRecomp-debug-apk`.
-
-### Lewat Android Studio
-1. Clone repo ini.
-2. Buka dengan Android Studio, tunggu Gradle sync.
-3. Klik **Run** ▶, atau ambil APK dari `app/build/outputs/apk/debug/`.
-
-## Struktur
-
-- `app/src/main/assets/index.html` - UI (HTML/CSS/JS murni, di-render lewat WebView)
-- `app/src/main/java/.../MainActivity.kt` - activity utama
+Once that's available we can run the analyzer, commit the generated
+`config.toml` + function map (not the game data itself), and start triaging
+the first batch of stubs.
