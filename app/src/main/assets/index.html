@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Okami Recomp</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#eceef6;font-family:'Roboto','Segoe UI',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+
+  .okr-scroll{scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+  .okr-scroll::-webkit-scrollbar{width:0;background:transparent}
+
+  @keyframes okrFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .okr-anim{opacity:0;animation:okrFadeUp .5s cubic-bezier(.22,.9,.3,1) forwards}
+
+  .okr-card{background:#ffffff;border-radius:20px;transition:transform .18s ease,box-shadow .18s ease}
+
+  .okr-row{display:flex;align-items:center;gap:13px;padding:14px 16px;cursor:pointer;transition:background .15s ease,transform .12s ease;border-radius:14px}
+  .okr-row:active{transform:scale(.985);background:#f0f1f8}
+
+  .okr-icon-tile{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s ease}
+  .okr-row:active .okr-icon-tile{transform:scale(.9) rotate(-2deg)}
+
+  .okr-chev{color:#c6cad8;flex-shrink:0;transition:transform .18s ease}
+
+  .okr-alert{appearance:none;border:none;width:100%;text-align:left;cursor:pointer;font-family:inherit;transition:transform .15s ease;padding:0;background:none}
+  .okr-alert:active{transform:scale(.98)}
+  .okr-alert-icon{animation:okrPulse 2.2s ease-in-out infinite}
+  @keyframes okrPulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+  .okr-tabbtn{appearance:none;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:50%;padding:10px 0;cursor:pointer;font-family:inherit;position:relative;z-index:1;transition:transform .15s ease}
+  .okr-tabbtn:active{transform:scale(.92)}
+  .okr-indicator{position:absolute;top:6px;bottom:6px;border-radius:16px;background:#eef0fb;transition:left .32s cubic-bezier(.22,.9,.3,1)}
+
+  .okr-icon-wrap{transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+  .okr-tabbtn:active .okr-icon-wrap{transform:scale(1.15)}
+
+  .okr-page{min-height:100%;display:flex;flex-direction:column;background:linear-gradient(180deg,#f3f4fa 0%,#eceef6 100%)}
+  .okr-content{flex:1;overflow-y:auto;padding:6px 20px calc(112px + env(safe-area-inset-bottom))}
+  .okr-nav{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));display:flex;justify-content:center;pointer-events:none}
+  .okr-nav-inner{pointer-events:auto;position:relative;display:flex;width:216px;padding:6px;box-shadow:0 10px 28px rgba(20,20,43,.16)}
+
+  #settingsPanel{display:none}
+</style>
+</head>
+<body>
+<div class="okr-page">
+
+  <div style="padding:calc(14px + env(safe-area-inset-top)) 20px 10px;flex-shrink:0;display:flex;align-items:center;gap:12px">
+    <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#7c6ff0);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3c3 2.4 4.2 5 4.2 7.8 0 3.6-2.3 6-4.2 7.7-1.9-1.7-4.2-4.1-4.2-7.7C7.8 8 9 5.4 12 3Z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 8.2v8.6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+    <div>
+      <div style="font-size:22px;font-weight:700;color:#14142b;letter-spacing:-.3px">Okami Recomp</div>
+      <div style="font-size:12.5px;color:#8a8fa3;font-weight:500;margin-top:1px">Native PS2 Port &middot; Android</div>
+    </div>
+  </div>
+
+  <div class="okr-content okr-scroll">
+
+    <div id="homePanel">
+      <button class="okr-alert okr-anim" style="animation-delay:.02s" onclick="alert('Pemilihan file ISO belum tersedia di mockup ini.')">
+        <div style="background:linear-gradient(135deg,#fde7e7,#fbd9d9);border-radius:20px;padding:16px;display:flex;gap:13px;align-items:center;margin-bottom:20px">
+          <div class="okr-icon-tile okr-alert-icon" style="background:#f6b8b8">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9c2b1f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.6 17.1a1.6 1.6 0 0 0 1.4 2.4h16.1a1.6 1.6 0 0 0 1.4-2.4L13.7 3.9a1.6 1.6 0 0 0-2.8 0 1.6 1.6 0 0 0-.6 0Z"/><path d="M12 9.6v4.2"/><circle cx="12" cy="16.6" r=".2" fill="#9c2b1f"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="color:#9c2b1f;font-weight:700;font-size:15.5px">ISO Game Tidak Ditemukan</div>
+            <div style="color:#b4463a;font-size:13px;margin-top:2px">Ketuk untuk memilih file ISO Okami (PS2)</div>
+          </div>
+          <svg class="okr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b4463a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+        </div>
+      </button>
+
+      <div class="okr-anim" style="animation-delay:.07s;color:#4f46e5;font-size:13.5px;font-weight:700;margin:2px 0 9px 6px;text-transform:uppercase;letter-spacing:.4px">Info Game</div>
+      <div class="okr-card okr-anim" style="animation-delay:.07s;padding:6px;margin-bottom:18px">
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#e8e9fd"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="4"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="11.7" r="1"/><circle cx="18.2" cy="14" r="1"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Judul Game</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">Okami &middot; PS2 (SLUS-21379)</div></div>
+        </div>
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#e8e9fd"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 3.5v3M15 3.5v3M9 17.5v3M15 17.5v3M3.5 9h3M3.5 15h3M17.5 9h3M17.5 15h3"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Versi Build Recomp</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">v0.3.0-alpha &middot; PS2Recomp</div></div>
+        </div>
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#e8e9fd"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2.5"/><path d="M3 13.5 8.5 9l3.5 3 4-4.5L21 11"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Status Renderer</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">VU1 partial &middot; cel-shading belum lengkap</div></div>
+        </div>
+      </div>
+
+      <div class="okr-anim" style="animation-delay:.12s;color:#0d9488;font-size:13.5px;font-weight:700;margin:2px 0 9px 6px;text-transform:uppercase;letter-spacing:.4px">Info Perangkat</div>
+      <div class="okr-card okr-anim" style="animation-delay:.12s;padding:6px;margin-bottom:18px">
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#dcf5f1"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="3"/><path d="M10.5 18.3h3"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Model Perangkat</div><div id="deviceModel" style="font-size:13px;color:#8a8fa3;margin-top:1px">Mendeteksi...</div></div>
+        </div>
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#dcf5f1"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M7.8 14.2c1-1 2.5-1.6 4.2-1.6s3.2.6 4.2 1.6M9.2 9.3h.01M14.8 9.3h.01"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Versi Android</div><div id="androidVersion" style="font-size:13px;color:#8a8fa3;margin-top:1px">Mendeteksi...</div></div>
+        </div>
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#dcf5f1"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M9.5 2.5v3M14.5 2.5v3M9.5 18.5v3M14.5 18.5v3M2.5 9.5h3M2.5 14.5h3M18.5 9.5h3M18.5 14.5h3"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Driver GPU</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">Vulkan (belum dicek)</div></div>
+        </div>
+      </div>
+
+      <div class="okr-anim" style="animation-delay:.17s;color:#b45309;font-size:13.5px;font-weight:700;margin:2px 0 9px 6px;text-transform:uppercase;letter-spacing:.4px">Info Status</div>
+      <div class="okr-card okr-anim" style="animation-delay:.17s;padding:6px;margin-bottom:18px">
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#fdecd1"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Status Shader Cache</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">Belum dikompilasi</div></div>
+        </div>
+        <div class="okr-row">
+          <div class="okr-icon-tile" style="background:#fdecd1"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19 6v6c0 4.6-3 7.6-7 8.5-4-.9-7-3.9-7-8.5V6Z"/><path d="m9 12 2 2 4-4.3"/></svg></div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Mode Kompatibilitas</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">Native &middot; tanpa emulasi</div></div>
+        </div>
+      </div>
+
+      <div class="okr-anim" style="animation-delay:.22s;color:#be185d;font-size:13.5px;font-weight:700;margin:2px 0 9px 6px;text-transform:uppercase;letter-spacing:.4px">Dukung Kami</div>
+      <div class="okr-card okr-anim" style="animation-delay:.22s;padding:16px;margin-bottom:6px;display:flex;gap:13px;align-items:flex-start">
+        <div class="okr-icon-tile" style="background:#fce4ef;margin-top:2px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3S3.5 15.4 3.5 9.3a4.8 4.8 0 0 1 8.5-3 4.8 4.8 0 0 1 8.5 3c0 6.1-8.5 11-8.5 11Z"/></svg></div>
+        <div><div style="font-size:15px;font-weight:700;color:#14142b">Dukung proyek ini</div><div style="font-size:13px;color:#8a8fa3;margin-top:4px;line-height:1.55">Okami Recomp akan selalu menjadi proyek gratis &amp; open source. Donasi membantu riset renderer tetap berjalan.</div></div>
+      </div>
+    </div>
+
+    <div id="settingsPanel">
+      <div class="okr-anim" style="color:#4f46e5;font-size:13.5px;font-weight:700;margin:2px 0 9px 6px;text-transform:uppercase;letter-spacing:.4px">Pengaturan</div>
+      <div class="okr-card okr-anim" style="padding:6px;margin-bottom:18px">
+        <div class="okr-row"><div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Resolusi Render</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">Native (480p)</div></div></div>
+        <div class="okr-row"><div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Batas FPS</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">60 FPS</div></div></div>
+        <div class="okr-row"><div style="flex:1"><div style="font-size:15px;font-weight:600;color:#14142b">Kontrol Sentuh</div><div style="font-size:13px;color:#8a8fa3;margin-top:1px">Aktif</div></div></div>
+      </div>
+      <div style="font-size:13px;color:#8a8fa3;text-align:center;padding:0 10px">Ini mockup antarmuka. Opsi di atas belum tersambung ke mesin game apapun.</div>
+    </div>
+
+  </div>
+
+  <div class="okr-nav">
+    <div class="okr-card okr-nav-inner">
+      <div id="indicator" class="okr-indicator" style="left:6px;width:calc(50% - 6px)"></div>
+      <button class="okr-tabbtn" id="tabHome" onclick="selectTab('home')">
+        <span class="okr-icon-wrap"><svg id="homeIcon" width="20" height="20" viewBox="0 0 24 24" fill="#4f46e5" stroke="#4f46e5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v8.5a1 1 0 0 0 1 1h3.2v-5.4h3.6v5.4H17a1 1 0 0 0 1-1V10"/></svg></span>
+        <span id="homeLabel" style="font-size:11px;font-weight:700;color:#4f46e5">Beranda</span>
+      </button>
+      <button class="okr-tabbtn" id="tabSettings" onclick="selectTab('settings')">
+        <span class="okr-icon-wrap"><svg id="settingsIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9aa0b4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.3M12 18.2v2.3M20.5 12h-2.3M5.8 12H3.5M18 6l-1.6 1.6M7.6 16.4 6 18M18 18l-1.6-1.6M7.6 7.6 6 6"/></svg></span>
+        <span id="settingsLabel" style="font-size:11px;font-weight:700;color:#9aa0b4">Pengaturan</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectTab(tab){
+  var isHome = tab === 'home';
+  document.getElementById('indicator').style.left = isHome ? '6px' : 'calc(50% + 0px)';
+  document.getElementById('homePanel').style.display = isHome ? 'block' : 'none';
+  document.getElementById('settingsPanel').style.display = isHome ? 'none' : 'block';
+  document.getElementById('homeLabel').style.color = isHome ? '#4f46e5' : '#9aa0b4';
+  document.getElementById('settingsLabel').style.color = !isHome ? '#4f46e5' : '#9aa0b4';
+  document.getElementById('homeIcon').setAttribute('fill', isHome ? '#4f46e5' : 'none');
+  document.getElementById('homeIcon').setAttribute('stroke', isHome ? '#4f46e5' : '#9aa0b4');
+  document.getElementById('settingsIcon').setAttribute('stroke', !isHome ? '#4f46e5' : '#9aa0b4');
+}
+
+// Basic real device info (this part genuinely runs on the phone)
+document.getElementById('androidVersion').textContent = 'Android ' + (navigator.userAgent.match(/Android ([0-9.]+)/) || [,'?'])[1];
+document.getElementById('deviceModel').textContent = (navigator.userAgent.match(/;\s*([^;)]+)\sBuild/) || [,'Tidak diketahui'])[1];
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.OkamiRecomp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#F3F4FA</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">#EEF0F6</item>
+    </style>
+</resources>
